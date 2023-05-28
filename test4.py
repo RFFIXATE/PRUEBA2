@@ -1,26 +1,36 @@
-# pip install requests pandas
-# para actualizar python.exe -m pip install --upgrade pip
-import requests
+#pip install pandas nltk
+
 import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from collections import Counter
 
-# Realizar la solicitud GET al endpoint
-response = requests.get("https://dummyjson.com/quotes")
+# Cargar el archivo CSV en un DataFrame de pandas
+df = pd.read_csv("endpoint.csv", delimiter="\t")
 
-# Verificar si la solicitud fue exitosa
-if response.status_code == 200:
-    data = response.json()
+# Obtener la columna "texto" como una lista de cadenas
+textos = df["texto"].tolist()
 
-    # Obtener los valores de los campos "autor" y "texto"
-    quotes = data["quotes"]
-    authors = [quote["autor"] for quote in quotes]
-    texts = [quote["texto"] for quote in quotes]
+# Unir todos los textos en una sola cadena
+texto_completo = " ".join(textos)
 
-    # Crear un DataFrame con los datos
-    df = pd.DataFrame({"autor": authors, "texto": texts})
+# Tokenizar el texto en palabras
+tokens = nltk.word_tokenize(texto_completo)
 
-    # Guardar los datos en un archivo CSV
-    df.to_csv("endpoint.csv", sep="\t", index=False, line_terminator="\n")
+# Obtener las palabras vacías (artículos, conectores, etc.) en el idioma inglés
+nltk.download('stopwords')
+palabras_vacias = set(stopwords.words('english'))
 
-    print("Los datos se han guardado correctamente en el archivo 'endpoint.csv'.")
-else:
-    print("No se pudo acceder al endpoint.")
+# Filtrar las palabras vacías y los signos de puntuación
+palabras_filtradas = [palabra.lower() for palabra in tokens if palabra.lower() not in palabras_vacias and palabra.isalpha()]
+
+# Contar la frecuencia de cada palabra
+frecuencia_palabras = Counter(palabras_filtradas)
+
+# Obtener el ranking top ten de palabras más repetidas
+top_ten = frecuencia_palabras.most_common(10)
+
+# Imprimir el resultado
+print("Ranking Top Ten de palabras más repetidas (excluyendo artículos y conectores):")
+for palabra, frecuencia in top_ten:
+    print(f"Palabra: {palabra} - Frecuencia: {frecuencia}")
