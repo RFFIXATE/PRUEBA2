@@ -1,3 +1,5 @@
+# pip install requests pandas
+# para actualizar python.exe -m pip install --upgrade pip
 import requests
 import csv
 
