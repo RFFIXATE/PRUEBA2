@@ -4,10 +4,12 @@ import datetime
 # Obtener la hora actual
 now = datetime.datetime.now()
 
-# Definir el rango de tiempo de la última hora cerrada
+# Obtener la hora de inicio de la última hora cerrada
 last_closed_hour = now - datetime.timedelta(hours=1)
-start_time = last_closed_hour.strftime('%Y-%m-%d %H:%M:%S')
-end_time = now.strftime('%Y-%m-%d %H:%M:%S')
+start_time = last_closed_hour.replace(minute=0, second=0, microsecond=0)
+
+# Obtener la hora de fin de la última hora cerrada
+end_time = last_closed_hour.replace(minute=59, second=59, microsecond=999)
 
 # Obtener el día actual en formato 'May 29'
 current_day = now.strftime('%b %d')
@@ -27,11 +29,12 @@ with open('/var/log/audit/audit.log', 'r') as archivo:
         if 'authentication' in linea and current_day in linea:
             timestamp = linea.split()[1]
             # Obtener la hora de la línea en formato 'HH:MM:SS'
-            hora = datetime.datetime.strptime(timestamp, '%H:%M:%S').strftime('%H:%M:%S')
+            hora = datetime.datetime.strptime(timestamp, '%H:%M:%S').time()
             # Verificar si la hora está dentro del rango deseado
-            if start_time <= hora <= end_time:
+            if start_time.time() <= hora <= end_time.time():
                 # Incrementar el contador de intentos fallidos
                 failed_attempts_count += 1
 
 # Mostrar el resultado
-print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {current_day} {start_time} - {end_time}: {failed_attempts_count}")
+print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {current_day} {start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}: {failed_attempts_count}")
+
