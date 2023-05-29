@@ -3,28 +3,28 @@
 # pip3 install requests
 
 import requests
-import pandas as pd
+import csv
 
-# Realizar la solicitud GET al endpoint
+# Realizar la solicitud HTTP al endpoint
 response = requests.get("https://dummyjson.com/quotes")
 
-# Verificar si la solicitud fue exitosa
+# Verificar si la solicitud fue exitosa (código de estado 200)
 if response.status_code == 200:
+    # Obtener los datos de la respuesta en formato JSON
     data = response.json()
 
-    # Obtener los valores de los campos "autor" y "texto"
-    quotes = data["quotes"]
-    authors = [quote["autor"] for quote in quotes]
-    texts = [quote["texto"] for quote in quotes]
+    # Extraer los valores de los campos "autor" y "texto"
+    quotes = data['quotes']
+    values = [[quote['autor'], quote['texto']] for quote in quotes]
 
-    # Crear un DataFrame con los datos
-    df = pd.DataFrame({"autor": authors, "texto": texts})
+    # Guardar los valores en un archivo CSV
+    with open("endpoint.csv", mode='w', newline='') as file:
+        writer = csv.writer(file, delimiter='\t')
+        writer.writerow(["autor", "texto"])  # Escribir la cabecera
+        writer.writerows(values)  # Escribir los valores
 
-    # Guardar los datos en un archivo CSV
-    df.to_csv("endpoint.csv", sep="\t", index=False, line_terminator="\n")
-
-    print("Los datos se han guardado correctamente en el archivo 'endpoint.csv'.")
+    print("Archivo CSV guardado exitosamente.")
 else:
-    print("No se pudo acceder al endpoint.")
+    print("Error al realizar la solicitud al endpoint.")
 
 
