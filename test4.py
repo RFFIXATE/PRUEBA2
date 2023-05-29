@@ -13,7 +13,7 @@ from collections import Counter
 df = pd.read_csv("endpoint.csv", delimiter="\t")
 
 # Obtener la columna "texto" como una lista de cadenas
-textos = df["texto"].tolist()
+textos = df["texto"].astype(str).tolist()
 
 # Unir todos los textos en una sola cadena
 texto_completo = " ".join(textos)
@@ -38,3 +38,4 @@ top_ten = frecuencia_palabras.most_common(10)
 print("Ranking Top Ten de palabras más repetidas (excluyendo artículos y conectores):")
 for palabra, frecuencia in top_ten:
     print(f"Palabra: {palabra} - Frecuencia: {frecuencia}")
+
