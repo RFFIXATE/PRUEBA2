@@ -12,7 +12,7 @@ with open("endpoint.csv", mode='r') as file:
     next(reader)  # Omitir la primera fila (cabecera)
     for row in reader:
         quote = row[1]
-        words = re.findall(r'\b\w+\b', quote)  # Extraer palabras de la cita
+        words = re.findall(r'\b\w+(?:\'\w+)?\b', quote)  # Extraer palabras de la cita
 
         # Incrementar el contador de palabras (excluyendo las palabras excluidas)
         for word in words:
