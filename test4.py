@@ -1,4 +1,5 @@
 #pip install pandas nltk
+# pip3 install nltk
 
 import pandas as pd
 import nltk

@@ -1,5 +1,8 @@
 # pip install requests pandas
 # para actualizar python.exe -m pip install --upgrade pip
+# pip3 install requests
+# pip3 install pandas
+
 import requests
 import pandas as pd
 

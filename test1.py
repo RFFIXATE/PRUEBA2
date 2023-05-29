@@ -1,3 +1,7 @@
+# en amazon AWS sudo yum install python3-pip -y
+# verificar version python3 --version
+# pip3 --version
+
 import subprocess
 from datetime import datetime, timedelta
 
