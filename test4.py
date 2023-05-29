@@ -3,7 +3,7 @@ import csv
 from collections import Counter
 import re
 
-excluded_words = ['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'o', 'pero', 'por', 'para', 'con']  # Palabras a excluir
+excluded_words = ['the', 'a', 'an', 'and', 'or', 'but', 'for', 'with', 'in', 'on', 'at', 'to', 'from']  # Palabras a excluir en inglés
 
 word_counter = Counter()  # Contador de palabras
 
