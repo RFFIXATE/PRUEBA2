@@ -19,4 +19,4 @@ with open('/var/log/audit/audit.log', 'r') as archivo:
             failed_attempts_count += 1
 
 # Mostrar el resultado
-print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time} - {end_time}: {failed_attempts_count}")
+print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time}:00 - {end_time}:00 {failed_attempts_count}")
