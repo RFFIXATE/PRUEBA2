@@ -9,7 +9,7 @@ last_closed_hour = now - datetime.timedelta(hours=1)
 start_time = last_closed_hour.replace(minute=0, second=0, microsecond=0)
 
 # Obtener la hora de fin del intervalo (hora actual redondeada hacia arriba)
-end_time = now.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
+end_time = now.replace(minute=0, second=0, microsecond=0)
 
 # Obtener el día actual en formato 'May 29'
 current_day = now.strftime('%b %d')
