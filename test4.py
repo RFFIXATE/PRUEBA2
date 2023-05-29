@@ -1,41 +1,30 @@
-#pip install pandas nltk
-# pip3 install nltk
-# python3 -m nltk.downloader punkt
-# python3 -m nltk.downloader stopwords
 
-
-import pandas as pd
-import nltk
-from nltk.corpus import stopwords
+import csv
 from collections import Counter
+import re
 
-# Cargar el archivo CSV en un DataFrame de pandas
-df = pd.read_csv("endpoint.csv", delimiter="\t")
+excluded_words = ['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'o', 'pero', 'por', 'para', 'con']  # Palabras a excluir
 
-# Obtener la columna "texto" como una lista de cadenas
-textos = df["texto"].astype(str).tolist()
+word_counter = Counter()  # Contador de palabras
 
-# Unir todos los textos en una sola cadena
-texto_completo = " ".join(textos)
+with open("endpoint.csv", mode='r') as file:
+    reader = csv.reader(file, delimiter='\t')
+    next(reader)  # Omitir la primera fila (cabecera)
+    for row in reader:
+        quote = row[1]
+        words = re.findall(r'\b\w+\b', quote)  # Extraer palabras de la cita
 
-# Tokenizar el texto en palabras
-tokens = nltk.word_tokenize(texto_completo)
+        # Incrementar el contador de palabras (excluyendo las palabras excluidas)
+        for word in words:
+            if word.lower() not in excluded_words:
+                word_counter[word.lower()] += 1
 
-# Obtener las palabras vacías (artículos, conectores, etc.) en el idioma inglés
-nltk.download('stopwords')
-palabras_vacias = set(stopwords.words('english'))
+# Obtener las diez palabras más repetidas
+top_ten = word_counter.most_common(10)
 
-# Filtrar las palabras vacías y los signos de puntuación
-palabras_filtradas = [palabra.lower() for palabra in tokens if palabra.lower() not in palabras_vacias and palabra.isalpha()]
+# Mostrar el ranking
+print("Ranking de las diez palabras más repetidas:")
+for i, (word, count) in enumerate(top_ten, start=1):
+    print(f"{i}. Palabra: {word}, Repeticiones: {count}")
 
-# Contar la frecuencia de cada palabra
-frecuencia_palabras = Counter(palabras_filtradas)
-
-# Obtener el ranking top ten de palabras más repetidas
-top_ten = frecuencia_palabras.most_common(10)
-
-# Imprimir el resultado
-print("Ranking Top Ten de palabras más repetidas (excluyendo artículos y conectores):")
-for palabra, frecuencia in top_ten:
-    print(f"Palabra: {palabra} - Frecuencia: {frecuencia}")
 
