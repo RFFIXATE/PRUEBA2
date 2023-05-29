@@ -37,5 +37,5 @@ except subprocess.CalledProcessError:
     failed_attempts = 0
 
 # Mostrar el resultado
-print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time_str}:00 - {end_time_str}:59: {failed_attempts}")
+print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time_str}:00 - {end_time_str}:00: {failed_attempts}")
 
