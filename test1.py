@@ -4,7 +4,6 @@
 # pip3 --version
 # sudo yum install git -y
 
-
 import subprocess
 import datetime
 
