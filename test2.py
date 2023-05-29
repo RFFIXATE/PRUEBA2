@@ -2,6 +2,8 @@
 
 import psutil
 import platform
+import subprocess
+import time
 
 while True:
     # Obtener información sobre el disco
