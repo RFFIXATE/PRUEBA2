@@ -28,10 +28,15 @@ end_time_str = end_time.strftime("%b %d %H")
 # Construir el comando grep para filtrar el archivo de registro
 grep_command = f"grep 'Failed password' /var/log/audit/audit.log | grep '{start_time_str}\|{end_time_str}'"
 
-# Ejecutar el comando grep y contar las líneas de salida
-output = subprocess.check_output(grep_command, shell=True)
-failed_attempts = len(output.decode().split('\n')) - 1
+try:
+    # Ejecutar el comando grep y contar las líneas de salida
+    output = subprocess.check_output(grep_command, shell=True)
+    failed_attempts = len(output.decode().split('\n')) - 1
+except subprocess.CalledProcessError:
+    # Si no hay coincidencias, mostrar mensaje de 0 intentos fallidos
+    failed_attempts = 0
 
 # Mostrar el resultado
 print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time_str}:00 - {end_time_str}:59: {failed_attempts}")
+
 
