@@ -6,34 +6,32 @@
 
 
 import subprocess
-from datetime import datetime, timedelta
+import datetime
 
 # Obtener la fecha y hora actual
-now = datetime.now()
+now = datetime.datetime.now()
 
-# Definir la hora de inicio y finalización del rango de tiempo deseado
-start_time = datetime(now.year, now.month, now.day, 9, 0)
-end_time = datetime(now.year, now.month, now.day, 9, 59)
+# Calcular la última hora cerrada
+last_hour = now.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
 
-# Verificar si hay cambio de día
-if now.hour < 9:
-    # Cambio de día anterior
-    start_time -= timedelta(days=1)
-    end_time -= timedelta(days=1)
+# Obtener el rango de tiempo para la última hora cerrada
+if last_hour.hour == 0:  # Si la última hora es medianoche
+    start_time = last_hour.replace(hour=23)
+    end_time = last_hour
+else:
+    start_time = last_hour.replace(hour=last_hour.hour - 1)
+    end_time = last_hour
 
-# Obtener el rango de horas para buscar
-hours_range = []
-current_time = start_time
-while current_time <= end_time:
-    hours_range.append(current_time.strftime("%H:%M"))
-    current_time += timedelta(hours=1)
+# Formatear el rango de tiempo como cadena
+start_time_str = start_time.strftime("%b %d %H")
+end_time_str = end_time.strftime("%b %d %H")
 
-# Comando grep para buscar los intentos fallidos en los archivos de registro
-grep_command = f"grep 'authentication failure' /var/log/auth.log | grep -E ' {'|'.join(hours_range)} ' | wc -l"
-result = subprocess.run(grep_command, shell=True, capture_output=True, text=True)
+# Construir el comando grep para filtrar el archivo de registro
+grep_command = f"grep 'Failed password' /var/log/secure | grep '{start_time_str}\|{end_time_str}'"
 
-# Obtener la cantidad total de intentos fallidos de inicio de sesión
-failed_attempts = int(result.stdout.strip())
+# Ejecutar el comando grep y contar las líneas de salida
+output = subprocess.check_output(grep_command, shell=True)
+failed_attempts = len(output.decode().split('\n')) - 1
 
-# Imprimir el resultado
-print(f"La cantidad total de intentos fallidos de inicio de sesión en el rango {start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')} es: {failed_attempts}")
+# Mostrar el resultado
+print(f"Cantidad de intentos fallidos de inicio de sesión en el rango {start_time_str}:00 - {end_time_str}:59: {failed_attempts}")
