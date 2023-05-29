@@ -2,26 +2,29 @@
 # para actualizar python.exe -m pip install --upgrade pip
 # pip3 install requests
 
-
 import requests
-import csv
+import pandas as pd
 
+# Realizar la solicitud GET al endpoint
 response = requests.get("https://dummyjson.com/quotes")
-data = response.json()
 
-quotes = data.get("quotes", [])  # Obtener la lista de citas, o una lista vacía si no hay citas
+# Verificar si la solicitud fue exitosa
+if response.status_code == 200:
+    data = response.json()
 
-if quotes:
-    with open("endpoint.csv", "w", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter="\t")
-        writer.writerow(["autor", "texto"])  # Escribir el encabezado en el archivo CSV
+    # Obtener los valores de los campos "autor" y "texto"
+    quotes = data["quotes"]
+    authors = [quote["autor"] for quote in quotes]
+    texts = [quote["texto"] for quote in quotes]
 
-        for quote in quotes:
-            author = quote.get("autor", "Desconocido")  # Obtener el autor, o usar "Desconocido" si no está presente
-            text = quote.get("texto", "")  # Obtener el texto, o una cadena vacía si no está presente
-            writer.writerow([author, text])  # Escribir los datos en el archivo CSV
+    # Crear un DataFrame con los datos
+    df = pd.DataFrame({"autor": authors, "texto": texts})
+
+    # Guardar los datos en un archivo CSV
+    df.to_csv("endpoint.csv", sep="\t", index=False, line_terminator="\n")
 
     print("Los datos se han guardado correctamente en el archivo 'endpoint.csv'.")
 else:
-    print("No se encontraron citas en los datos obtenidos.")
+    print("No se pudo acceder al endpoint.")
+
 
