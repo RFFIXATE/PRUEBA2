@@ -3,6 +3,7 @@
 # verificar version python3 --version
 # pip3 --version
 # sudo yum install git -y
+#considerando que nosotros utilizamos la máquian virtual en aws nuestra ruta es /var/log/audit/audit.log en caso de utilizar la máquina de clases es /var/log/secure
 
 import subprocess
 import datetime
