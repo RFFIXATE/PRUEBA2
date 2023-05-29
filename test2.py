@@ -1,22 +1,36 @@
-import subprocess
-import time
+#pip3 install psutil
+
+import psutil
+import platform
 
 while True:
-    # Obtener la información de los recursos de hardware
-    disk_usage = subprocess.check_output(['df', '-h'])
-    memory_usage = subprocess.check_output(['free', '-h'])
-    cpu_usage = subprocess.check_output(['top', '-n', '1', '-b'])
-    network_status = subprocess.check_output(['ifconfig'])
+    # Obtener información sobre el disco
+    disk_usage = psutil.disk_usage('/')
+    total_disk = disk_usage.total
+    used_disk = disk_usage.used
+    free_disk = disk_usage.free
 
-    # Imprimir los resultados
-    print("Espacio en disco:")
-    print(disk_usage.decode('utf-8'))
-    print("\nUso de memoria:")
-    print(memory_usage.decode('utf-8'))
-    print("\nUso de CPU:")
-    print(cpu_usage.decode('utf-8'))
-    print("\nEstado de la red:")
-    print(network_status.decode('utf-8'))
+    # Obtener información sobre la memoria
+    memory = psutil.virtual_memory()
+    total_memory = memory.total
+    used_memory = memory.used
+    free_memory = memory.available
 
-    # Esperar 10 segundos antes de la siguiente iteración
+    # Obtener información sobre la CPU
+    cpu_percent = psutil.cpu_percent()
+    cpu_count = psutil.cpu_count()
+
+    # Obtener información sobre la red
+    network = psutil.net_io_counters()
+    bytes_sent = network.bytes_sent
+    bytes_received = network.bytes_recv
+
+    # Imprimir los resultados en pantalla
+    print("Recursos de hardware disponibles:")
+    print(f"Disco: Total={total_disk}B, Usado={used_disk}B, Libre={free_disk}B")
+    print(f"Memoria: Total={total_memory}B, Usada={used_memory}B, Libre={free_memory}B")
+    print(f"CPU: Uso={cpu_percent}%, Núcleos={cpu_count}")
+    print(f"Red: Bytes enviados={bytes_sent}, Bytes recibidos={bytes_received}")
+
+    # Esperar 10 segundos antes de volver a obtener la información
     time.sleep(10)
