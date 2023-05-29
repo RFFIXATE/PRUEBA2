@@ -15,7 +15,7 @@ if response.status_code == 200:
 
     # Extraer los valores de los campos "autor" y "texto"
     quotes = data['quotes']
-    values = [[quote['autor'], quote['texto']] for quote in quotes]
+    values = [[quote['author'], quote['texto']] for quote in quotes]
 
     # Guardar los valores en un archivo CSV
     with open("endpoint.csv", mode='w', newline='') as file:
